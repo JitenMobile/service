@@ -1,5 +1,5 @@
-.firebase/*
+.firebase/
 .DS_Store
 
 .env
-tmp/*
+tmp/

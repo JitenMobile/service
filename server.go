@@ -1,13 +1,18 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gin-gonic/gin"
+
+	"github.com/joho/godotenv"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/jiten-mobile/service/db"
 	"github.com/jiten-mobile/service/graph"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -30,15 +35,23 @@ func graphqlHandler() gin.HandlerFunc {
 }
 
 func playgroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+	h := playground.Handler("GraphQL", "/v1/query")
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
 	}
 }
 
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading env file %v", err)
+	}
+	db.InitClient()
+}
+
 func main() {
 	r := gin.Default()
-	r.POST("/query", graphqlHandler())
+	r.POST("/v1/query", graphqlHandler())
 	r.GET("/", playgroundHandler())
 	r.Run()
 }

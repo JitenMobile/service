@@ -2,27 +2,23 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
-
-type User {
-  id: ID!
-  name: String!
-}
-
 type Query {
-  todos: [Todo!]!
+  word(word: String!): Word
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+type Word {
+  id: ID!
+  word: String!
+  synonyms: [String!]
+  antonyms: [String!]
+  relatedTerms: [String!]
+  pronunciation: String
+  tense: String
 }
 
-type Mutation {
-  createTodo(input: NewTodo!): Todo!
+type Definition {
+  id: ID!
+  examples: [String!]
+  meaning: String
+  partOfSpeech: String
 }

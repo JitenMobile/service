@@ -2,25 +2,22 @@
 
 package model
 
-type Mutation struct {
-}
-
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Definition struct {
+	ID           string   `json:"id"`
+	Examples     []string `json:"examples,omitempty"`
+	Meaning      *string  `json:"meaning,omitempty"`
+	PartOfSpeech *string  `json:"partOfSpeech,omitempty"`
 }
 
 type Query struct {
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
-}
-
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type Word struct {
+	ID            string   `json:"id"`
+	Word          string   `json:"word"`
+	Synonyms      []string `json:"synonyms,omitempty"`
+	Antonyms      []string `json:"antonyms,omitempty"`
+	RelatedTerms  []string `json:"relatedTerms,omitempty"`
+	Pronunciation *string  `json:"pronunciation,omitempty"`
+	Tense         *string  `json:"tense,omitempty"`
 }

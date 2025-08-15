@@ -16,6 +16,5 @@ func InitClient() (*firestore.Client, error) {
 		log.Fatalf("Failed to create client: %v", err)
 		return nil, err
 	}
-	defer client.Close()
 	return client, nil
 }

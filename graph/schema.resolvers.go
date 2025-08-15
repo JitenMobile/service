@@ -6,14 +6,13 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/jiten-mobile/service/graph/model"
 )
 
 // Word is the resolver for the word field.
 func (r *queryResolver) Word(ctx context.Context, word string) (*model.Word, error) {
-	panic(fmt.Errorf("not implemented: Word - word"))
+	return r.DictionaryStore.GetWord(ctx, word)
 }
 
 // Query returns QueryResolver implementation.

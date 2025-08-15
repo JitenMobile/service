@@ -3,3 +3,7 @@
 
 .env
 tmp/
+
+# Generated files
+generated.go
+models_gen.go

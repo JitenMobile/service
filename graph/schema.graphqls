@@ -1,6 +1,4 @@
 # GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
 
 type Query {
   word(word: String!): Word
@@ -12,14 +10,21 @@ type Word {
   synonyms: [String!]
   antonyms: [String!]
   relatedTerms: [String!]
-  pronunciation: String
-  tense: String
-  definitions: [Definition!]
+  pronunciation: String!
+  tenses: Tenses
+  definitions: [Definition!]!
 }
 
 type Definition {
   id: ID!
-  examples: [String!]
-  meaning: String
-  partOfSpeech: String
+  examples: [String!]!
+  meaning: String!
+  partOfSpeech: String!
+}
+
+type Tenses {
+  continuous: String
+  future: String
+  past: String
+  present: String
 }

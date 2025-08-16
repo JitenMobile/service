@@ -13,11 +13,13 @@ import (
 type Resolver struct {
 	DictionaryStore *service.DictionaryStore
 	LLMService      *service.LLMService
+	PromptStore     *service.PromptStore
 }
 
 func NewDictionaryResolver(firestoreClient *firestore.Client, openaiClient *openai.Client) *Resolver {
 	return &Resolver{
 		DictionaryStore: service.NewDictionaryService(firestoreClient),
 		LLMService:      service.NewLLMService(openaiClient),
+		PromptStore:     service.NewPromptStore(),
 	}
 }

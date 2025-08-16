@@ -9,3 +9,7 @@ type LLMService struct {
 func NewLLMService(client *openai.Client) *LLMService {
 	return &LLMService{client: client}
 }
+
+func (llm *LLMService) StructuredOutput(prompt string, model interface{}) {
+
+}

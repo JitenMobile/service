@@ -6,6 +6,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/gin-gonic/gin"
+	"github.com/openai/openai-go/v2"
 
 	"github.com/joho/godotenv"
 
@@ -14,15 +15,18 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/jiten-mobile/service/db"
+	"github.com/jiten-mobile/service/core"
 	"github.com/jiten-mobile/service/graph"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
 var firestoreClient *firestore.Client
+var openaiClient *openai.Client
 
 func graphqlHandler() gin.HandlerFunc {
-	h := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: graph.NewFirestoreResolver(firestoreClient)}))
+	h := handler.New(graph.NewExecutableSchema(
+		graph.Config{Resolvers: graph.NewDictionaryResolver(firestoreClient, openaiClient)}),
+	)
 
 	h.AddTransport(transport.Options{})
 	h.AddTransport(transport.GET{})
@@ -50,7 +54,8 @@ func init() {
 	if err != nil {
 		log.Fatalf("Error loading env file %v", err)
 	}
-	firestoreClient, _ = db.InitClient()
+	firestoreClient, _ = core.InitFirestoreClient()
+	openaiClient = core.InitOpenaiClient()
 }
 
 func main() {

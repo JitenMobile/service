@@ -1,4 +1,4 @@
-package db
+package core
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 	"cloud.google.com/go/firestore"
 )
 
-func InitClient() (*firestore.Client, error) {
+func InitFirestoreClient() (*firestore.Client, error) {
 	ctx := context.Background()
 	projectId := os.Getenv("PROJECT_ID")
 	client, err := firestore.NewClient(ctx, projectId)

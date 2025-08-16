@@ -3,6 +3,7 @@ package graph
 import (
 	"cloud.google.com/go/firestore"
 	"github.com/jiten-mobile/service/service"
+	"github.com/openai/openai-go/v2"
 )
 
 // This file will not be regenerated automatically.
@@ -11,10 +12,12 @@ import (
 
 type Resolver struct {
 	DictionaryStore *service.DictionaryStore
+	LLMService      *service.LLMService
 }
 
-func NewFirestoreResolver(firestoreClient *firestore.Client) *Resolver {
+func NewDictionaryResolver(firestoreClient *firestore.Client, openaiClient *openai.Client) *Resolver {
 	return &Resolver{
 		DictionaryStore: service.NewDictionaryService(firestoreClient),
+		LLMService:      service.NewLLMService(openaiClient),
 	}
 }

@@ -16,7 +16,6 @@ type Word {
 }
 
 type Definition {
-  id: ID!
   examples: [String!]!
   meaning: String!
   partOfSpeech: String!

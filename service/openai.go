@@ -17,7 +17,7 @@ func NewLLMService(client *openai.Client) *LLMService {
 	return &LLMService{client: client}
 }
 
-func (llm *LLMService) StructuredOutput(word string, systemPrompt string, jsonDescription string) (*model.Word, error) {
+func (llm *LLMService) StructuredOutput(ctx context.Context, word string, systemPrompt string, jsonDescription string) (*model.Word, error) {
 
 	jsonSchema := openai.ResponseFormatJSONSchemaJSONSchemaParam{
 		Name:        "definition_generation",
@@ -26,7 +26,7 @@ func (llm *LLMService) StructuredOutput(word string, systemPrompt string, jsonDe
 	}
 
 	resp, err := llm.client.Chat.Completions.New(
-		context.Background(),
+		ctx,
 		openai.ChatCompletionNewParams{
 			Messages: []openai.ChatCompletionMessageParamUnion{
 				openai.SystemMessage(systemPrompt),
@@ -35,7 +35,7 @@ func (llm *LLMService) StructuredOutput(word string, systemPrompt string, jsonDe
 			ResponseFormat: openai.ChatCompletionNewParamsResponseFormatUnion{
 				OfJSONSchema: &openai.ResponseFormatJSONSchemaParam{JSONSchema: jsonSchema},
 			},
-			Model: openai.ChatModelGPT5Nano,
+			Model: openai.ChatModelGPT4_1Mini,
 		},
 	)
 

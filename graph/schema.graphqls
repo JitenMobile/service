@@ -1,29 +1,30 @@
 # GraphQL schema example
+directive @goTag(key: String!, value: String!) on FIELD_DEFINITION
 
 type Query {
   word(word: String!): Word
 }
 
 type Word {
-  id: ID!
-  word: String!
-  synonyms: [String!]
-  antonyms: [String!]
-  relatedTerms: [String!]
-  pronunciation: String!
-  tenses: Tenses
-  definitions: [Definition!]!
+  id: ID! @goTag(key: "firestore", value: "id")
+  word: String! @goTag(key: "firestore", value: "word")
+  synonyms: [String!] @goTag(key: "firestore", value: "synonyms,omitempty")
+  antonyms: [String!] @goTag(key: "firestore", value: "antonyms,omitempty")
+  relatedTerms: [String!] @goTag(key: "firestore", value: "relatedTerms,omitempty")
+  pronunciation: String! @goTag(key: "firestore", value: "pronunciation")
+  tenses: Tenses @goTag(key: "firestore", value: "tenses,omitempty")
+  definitions: [Definition!]! @goTag(key: "firestore", value: "definitions")
 }
 
 type Definition {
-  examples: [String!]!
-  meaning: String!
-  partOfSpeech: String!
+  examples: [String!]! @goTag(key: "firestore", value: "examples")
+  meaning: String! @goTag(key: "firestore", value: "meaning")
+  partOfSpeech: String! @goTag(key: "firestore", value: "partOfSpeech")
 }
 
 type Tenses {
-  continuous: String
-  future: String
-  past: String
-  present: String
+  continuous: String @goTag(key: "firestore", value: "continuous,omitempty")
+  future: String @goTag(key: "firestore", value: "future,omitempty")
+  past: String @goTag(key: "firestore", value: "past,omitempty")
+  present: String @goTag(key: "firestore", value: "present,omitempty")
 }

@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"cloud.google.com/go/firestore"
@@ -54,7 +55,8 @@ func init() {
 	if err != nil {
 		log.Fatalf("Error loading env file %v", err)
 	}
-	firestoreClient, _ = core.InitFirestoreClient()
+	ctx := context.Background()
+	firestoreClient, _ = core.InitFirestoreClient(ctx)
 	openaiClient = core.InitOpenaiClient()
 }
 

@@ -30,3 +30,10 @@ func (db *DictionaryStore) GetWord(ctx context.Context, word string) (*model.Wor
 	wordData.ID = wordData.Word
 	return &wordData, nil
 }
+
+func (db *DictionaryStore) WriteWord(ctx context.Context, wordData *model.Word) error {
+	wordData.ID = wordData.Word
+	docRef := db.client.Collection("dictionary").Doc(wordData.Word)
+	_, err := docRef.Set(ctx, wordData)
+	return err
+}

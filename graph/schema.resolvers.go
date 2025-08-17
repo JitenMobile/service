@@ -6,17 +6,19 @@ package graph
 
 import (
 	"context"
+	"log"
 
 	"github.com/jiten-mobile/service/graph/model"
 )
 
 // Word is the resolver for the word field.
 func (r *queryResolver) Word(ctx context.Context, word string) (*model.Word, error) {
-	prompt := r.PromptStore.GenerateDefinitionsPrompt()
-	jsonDescription := r.PromptStore.JsonDescription()
-	// test happening here
-	return r.LLMService.StructuredOutput(word, prompt, jsonDescription)
-	// return r.DictionaryStore.GetWord(ctx, word)
+	data, err := r.ResolveWordQuery(ctx, word)
+	if err != nil {
+		log.Printf("Error: Failed to resolve query - [word]:  %v", err)
+		return nil, err
+	}
+	return data, nil
 }
 
 // Query returns QueryResolver implementation.

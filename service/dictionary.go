@@ -18,6 +18,7 @@ func NewDictionaryService(client *firestore.Client) *DictionaryStore {
 }
 
 func (db *DictionaryStore) GetWord(ctx context.Context, word string) (*model.Word, error) {
+
 	doc, err := db.client.Collection("dictionary").Doc(word).Get(ctx)
 	if err != nil {
 		return nil, err

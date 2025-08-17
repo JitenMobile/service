@@ -7,7 +7,26 @@ import (
 
 // ------ schema helpers ------
 
+func detref(t reflect.Type) reflect.Type {
+	for t.Kind() == reflect.Pointer {
+		t = t.Elem()
+	}
+	return t
+}
+
+func parseArrayItemType(t reflect.Type) any {
+	output := JsonTypeOf(t.Elem())
+	switch output.(type) {
+	case string:
+		return map[string]any{"type": output}
+	default:
+		return output
+	}
+}
+
 func JsonTypeOf(t reflect.Type) any {
+	t = detref(t)
+
 	switch t.Kind() {
 	case reflect.String:
 		return "string"
@@ -20,14 +39,15 @@ func JsonTypeOf(t reflect.Type) any {
 	case reflect.Slice, reflect.Array:
 		return map[string]any{
 			"type":  "array",
-			"items": map[string]any{"type": JsonTypeOf(t.Elem())},
+			"items": parseArrayItemType(t),
 		}
 	case reflect.Struct:
 		props, req := StructProperties(t)
 		return map[string]any{
-			"type":       "object",
-			"properties": props,
-			"required":   req,
+			"type":                 "object",
+			"properties":           props,
+			"required":             req,
+			"additionalProperties": false,
 		}
 	default:
 		return "string"
@@ -36,7 +56,7 @@ func JsonTypeOf(t reflect.Type) any {
 
 func StructProperties(t reflect.Type) (map[string]any, []string) {
 	props := make(map[string]any)
-	var required []string
+	var required []string = []string{}
 
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
@@ -70,8 +90,14 @@ func StructProperties(t reflect.Type) (map[string]any, []string) {
 		} else {
 			required = append(required, name)
 		}
-		props[name] = map[string]any{"type": JsonTypeOf(f.Type)}
-	}
+		s := JsonTypeOf(f.Type)
 
+		switch v := s.(type) {
+		case string:
+			props[name] = map[string]any{"type": v}
+		case map[string]any:
+			props[name] = v
+		}
+	}
 	return props, required
 }

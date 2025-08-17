@@ -12,7 +12,11 @@ import (
 
 // Word is the resolver for the word field.
 func (r *queryResolver) Word(ctx context.Context, word string) (*model.Word, error) {
-	return r.DictionaryStore.GetWord(ctx, word)
+	prompt := r.PromptStore.GenerateDefinitionsPrompt()
+	jsonDescription := r.PromptStore.JsonDescription()
+	// test happening here
+	return r.LLMService.StructuredOutput(word, prompt, jsonDescription)
+	// return r.DictionaryStore.GetWord(ctx, word)
 }
 
 // Query returns QueryResolver implementation.

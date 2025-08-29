@@ -37,7 +37,7 @@ func (r *Resolver) ResolveWordQuery(ctx context.Context, word string) (*model.Wo
 	if strings.HasSuffix(err.Error(), "not found") {
 		prompt := r.PromptStore.GenerateDefinitionsPrompt()
 		jsonDescription := r.PromptStore.JsonDescription()
-		wordData, err := r.LLMService.StructuredOutput(ctx, word, prompt, jsonDescription)
+		wordData, err := r.LLMService.StructuredWord(ctx, word, prompt, jsonDescription)
 		if err != nil {
 			return nil, err
 		}
@@ -46,4 +46,8 @@ func (r *Resolver) ResolveWordQuery(ctx context.Context, word string) (*model.Wo
 	} else {
 		return nil, err
 	}
+}
+
+func (r *Resolver) ResolveTranslationQuery(ctx context.Context, word string, targetLang string) (*model.Translation, error) {
+	return &model.Translation{}, nil
 }

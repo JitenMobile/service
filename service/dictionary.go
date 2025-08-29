@@ -31,6 +31,13 @@ func (db *DictionaryStore) GetWord(ctx context.Context, word string) (*model.Wor
 	return &wordData, nil
 }
 
+func (db *DictionaryStore) GetTranslation(ctx context.Context, word string, targetLang string) (*model.Translation, error) {
+	// doc, err := db.client.Collection("translations").Doc(word).Get(ctx)
+	// wordData, err := db.GetWord(ctx, word)
+
+	return nil, nil
+}
+
 func (db *DictionaryStore) WriteWord(ctx context.Context, wordData *model.Word) error {
 	wordData.ID = wordData.Word
 	docRef := db.client.Collection("dictionary").Doc(wordData.Word)

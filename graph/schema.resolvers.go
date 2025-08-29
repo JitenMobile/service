@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/jiten-mobile/service/graph/model"
@@ -19,6 +20,11 @@ func (r *queryResolver) Word(ctx context.Context, word string) (*model.Word, err
 		return nil, err
 	}
 	return data, nil
+}
+
+// Translation is the resolver for the translation field.
+func (r *queryResolver) Translation(ctx context.Context, word string, targetLang string) (*model.Translation, error) {
+	panic(fmt.Errorf("not implemented: Translation - translation"))
 }
 
 // Query returns QueryResolver implementation.

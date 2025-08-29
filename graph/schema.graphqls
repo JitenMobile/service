@@ -3,6 +3,7 @@ directive @goTag(key: String!, value: String!) on FIELD_DEFINITION
 
 type Query {
   word(word: String!): Word
+  translation(word: String!, targetLang: String!): Translation
 }
 
 type Word {
@@ -17,6 +18,13 @@ type Word {
 }
 
 type Definition {
+  examples: [String!]! @goTag(key: "firestore", value: "examples")
+  meaning: String! @goTag(key: "firestore", value: "meaning")
+  partOfSpeech: String! @goTag(key: "firestore", value: "partOfSpeech")
+}
+
+type Translation {
+  word: String! @goTag(key: "firestore", value: "word")
   examples: [String!]! @goTag(key: "firestore", value: "examples")
   meaning: String! @goTag(key: "firestore", value: "meaning")
   partOfSpeech: String! @goTag(key: "firestore", value: "partOfSpeech")

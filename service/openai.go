@@ -17,7 +17,7 @@ func NewLLMService(client *openai.Client) *LLMService {
 	return &LLMService{client: client}
 }
 
-func (llm *LLMService) StructuredOutput(ctx context.Context, word string, systemPrompt string, jsonDescription string) (*model.Word, error) {
+func (llm *LLMService) StructuredWord(ctx context.Context, word string, systemPrompt string, jsonDescription string) (*model.Word, error) {
 
 	jsonSchema := openai.ResponseFormatJSONSchemaJSONSchemaParam{
 		Name:        "definition_generation",

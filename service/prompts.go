@@ -4,23 +4,30 @@ const generateDefinitionsPrompt = "You are a English language expert with extens
 
 const predictWordPrompt = "You are a English language expert with extensive knowledge of English dictionaries. If the user provides a specific word or a short sentence, correct the potential spelling errors and return them. If the user provides non-english, try your best to find the corresponting english word(s). If the user provides unrecognizable combination of letters, set fail to ture and return fail message."
 
-const jsonDescription = "Generate word definitions where each definition object contains its own examples array. Do not put examples at the top level - they must be inside each definition object along with partOfSpeech and meaning."
+const generationJsonDescription = "Generate word definitions where each definition object contains its own examples array. Do not put examples at the top level - they must be inside each definition object along with partOfSpeech and meaning."
+
+const translationJsonDescription = "Translate the given object fields into the target language. Each field in the object should be translated accurately while preserving its original meaning and context. Ensure proper grammar and syntax in the target language."
+
+const translationPrefixPrompt = "You are a professional translator who can precisely translate the each fields of the given object from English to "
 
 type PromptStore struct {
+	generateDefinitionsPrompt  string
+	predictWordPrompt          string
+	translationPrefixPrompt    string
+	generationJsonDescription  string
+	translationJsonDescription string
 }
 
-func (p *PromptStore) GenerateDefinitionsPrompt() string {
-	return generateDefinitionsPrompt
-}
-
-func (p *PromptStore) PredictWordPrompt() string {
-	return predictWordPrompt
-}
-
-func (p *PromptStore) JsonDescription() string {
-	return jsonDescription
+func (p *PromptStore) GetTranslationPrompt(targetLang string) string {
+	return translationPrefixPrompt + targetLang
 }
 
 func NewPromptStore() *PromptStore {
-	return &PromptStore{}
+	return &PromptStore{
+		generateDefinitionsPrompt:  generateDefinitionsPrompt,
+		predictWordPrompt:          predictWordPrompt,
+		translationPrefixPrompt:    translationPrefixPrompt,
+		generationJsonDescription:  generationJsonDescription,
+		translationJsonDescription: translationJsonDescription,
+	}
 }

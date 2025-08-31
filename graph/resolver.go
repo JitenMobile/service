@@ -2,6 +2,7 @@ package graph
 
 import (
 	"context"
+	"log"
 	"strings"
 
 	"cloud.google.com/go/firestore"
@@ -29,32 +30,52 @@ func NewDictionaryResolver(firestoreClient *firestore.Client, openaiClient *open
 func (r *Resolver) ResolveWordQuery(ctx context.Context, word string) (*model.Word, error) {
 
 	wordData, err := r.DictionaryStore.GetWord(ctx, word)
+	// Should allow "not found" error pass
 	if err == nil {
 		return wordData, nil
 	}
-	if strings.HasSuffix(err.Error(), "not found") {
+
+	// Only generate new word content when the error is "not found"
+	if strings.HasPrefix(err.Error(), service.NotFoundPrefix) {
 		wordData, err := r.LLMService.StructuredWord(ctx, word)
 		if err != nil {
+			log.Printf("Error generating word '%s' from LLMService: '%v", word, err)
 			return nil, err
 		}
 		err = r.DictionaryStore.WriteWord(ctx, wordData)
-		return wordData, err
-	} else {
-		return nil, err
+		// don't return error to the query, as the data is ready for user
+		if err != nil {
+			log.Printf("Error writing word data to database: %v", err)
+		}
+		return wordData, nil
 	}
+	return nil, err
 }
 
 func (r *Resolver) ResolveTranslationQuery(ctx context.Context, word string, targetLang string) (*model.Translation, error) {
+
+	translationData, err := r.DictionaryStore.GetTranslation(ctx, word, targetLang)
+	if err == nil {
+		return translationData, nil
+	}
+
 	wordData, err := r.DictionaryStore.GetWord(ctx, word)
-	// remove this logic after testing
 	if err != nil {
+		log.Printf("Error reading word data from databse '%v'", err)
 		return nil, err
 	}
 
 	definitions := wordData.Definitions
-	translationData, err := r.LLMService.StructuredTranslation(ctx, targetLang, definitions)
+	newTranslationData, err := r.LLMService.StructuredTranslation(ctx, targetLang, definitions)
 	if err != nil {
+		log.Printf("Error generating definition for word '%s' from LLMService: '%v", word, err)
 		return nil, err
 	}
-	return translationData, nil
+
+	err = r.DictionaryStore.WriteTranslation(ctx, word, targetLang, newTranslationData)
+	if err != nil {
+		// don't return error to the query, as the data is ready for user
+		log.Printf("Error writing translations to database: %v", err)
+	}
+	return newTranslationData, nil
 }

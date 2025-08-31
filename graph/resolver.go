@@ -17,14 +17,12 @@ import (
 type Resolver struct {
 	DictionaryStore *service.DictionaryStore
 	LLMService      *service.LLMService
-	PromptStore     *service.PromptStore
 }
 
 func NewDictionaryResolver(firestoreClient *firestore.Client, openaiClient *openai.Client) *Resolver {
 	return &Resolver{
 		DictionaryStore: service.NewDictionaryService(firestoreClient),
 		LLMService:      service.NewLLMService(openaiClient),
-		PromptStore:     service.NewPromptStore(),
 	}
 }
 
@@ -35,9 +33,7 @@ func (r *Resolver) ResolveWordQuery(ctx context.Context, word string) (*model.Wo
 		return wordData, nil
 	}
 	if strings.HasSuffix(err.Error(), "not found") {
-		prompt := r.PromptStore.GenerateDefinitionsPrompt()
-		jsonDescription := r.PromptStore.JsonDescription()
-		wordData, err := r.LLMService.StructuredWord(ctx, word, prompt, jsonDescription)
+		wordData, err := r.LLMService.StructuredWord(ctx, word)
 		if err != nil {
 			return nil, err
 		}

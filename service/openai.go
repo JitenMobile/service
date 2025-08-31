@@ -59,9 +59,9 @@ func (llm *LLMService) StructuredWord(ctx context.Context, word string) (*model.
 }
 
 // Docs
-func (llm *LLMService) StructuredTranslation(ctx context.Context, targetLang string, wordData *model.Translation) (*model.Translation, error) {
+func (llm *LLMService) StructuredTranslation(ctx context.Context, targetLang string, definitions []*model.Definition) (*model.Translation, error) {
 
-	wordDataJson, err := json.Marshal(wordData)
+	wordDataJson, err := json.Marshal(definitions)
 	if err != nil {
 		return nil, err
 	}

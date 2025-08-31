@@ -24,10 +24,9 @@ type Definition {
 }
 
 type Translation {
-  word: String! @goTag(key: "firestore", value: "word")
-  examples: [String!]! @goTag(key: "firestore", value: "examples")
-  meaning: String! @goTag(key: "firestore", value: "meaning")
-  partOfSpeech: String! @goTag(key: "firestore", value: "partOfSpeech")
+  translatedWord: String! @goTag(key: "firestore", value: "translatedWord")
+  language: String! @goTag(key: "firestore", value: "language")
+  definitions: [Definition!] @goTag(key: "firestore", value: "definitions")
 }
 
 type Tenses {

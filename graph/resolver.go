@@ -45,5 +45,16 @@ func (r *Resolver) ResolveWordQuery(ctx context.Context, word string) (*model.Wo
 }
 
 func (r *Resolver) ResolveTranslationQuery(ctx context.Context, word string, targetLang string) (*model.Translation, error) {
-	return &model.Translation{}, nil
+	wordData, err := r.DictionaryStore.GetWord(ctx, word)
+	// remove this logic after testing
+	if err != nil {
+		return nil, err
+	}
+
+	definitions := wordData.Definitions
+	translationData, err := r.LLMService.StructuredTranslation(ctx, targetLang, definitions)
+	if err != nil {
+		return nil, err
+	}
+	return translationData, nil
 }

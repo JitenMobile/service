@@ -6,7 +6,7 @@ const predictWordPrompt = "You are a English language expert with extensive know
 
 const generationJsonDescription = "Generate word definitions where each definition object contains its own examples array. Do not put examples at the top level - they must be inside each definition object along with partOfSpeech and meaning."
 
-const translationJsonDescription = "Translate the given object fields into the target language. Each field in the object should be translated accurately while preserving its original meaning and context. Ensure proper grammar and syntax in the target language."
+const translationJsonDescription = "Translate the given object fields into the target language. Each field in the object should be translated accurately while preserving its original meaning and context. Ensure proper grammar and syntax in the target language. Be sure to include the examples field, and translate the word itself and put it into the word field. The target language is in ISO 639 Set 1 format. The output should preserve all of the fields as given."
 
 const translationPrefixPrompt = "You are a professional translator who can precisely translate the each fields of the given object from English to "
 

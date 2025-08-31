@@ -32,17 +32,29 @@ func (db *DictionaryStore) GetWord(ctx context.Context, word string) (*model.Wor
 }
 
 // func (db *DictionaryStore) GetTranslation(ctx context.Context, word string, targetLang string) (*model.Translation, error) {
-// 	doc, err := db.client.Collection("translations").Doc(word).Collection(targetLang).Doc(word).Get(ctx)
+// 	doc, err := db.client.Collection("dictionary").Doc(word).Get(ctx)
 // 	if err != nil {
 // 		return nil, err
 // 	}
 
-// 	var translationDoc map[string]model.Translation
-// 	if err := doc.DataTo(translationDoc); err != nil {
+// 	var wordData model.Word
+// 	if err := doc.DataTo(&wordData); err != nil {
 // 		return nil, err
 // 	}
 
-// 	return nil, nil
+// definitions := wordData.Definitions
+
+// doc, err := db.client.Collection("translations").Doc(word).Collection(targetLang).Doc(word).Get(ctx)
+// if err != nil {
+// 	return nil, err
+// }
+
+// var translationDoc map[string]model.Translation
+// if err := doc.DataTo(translationDoc); err != nil {
+// 	return nil, err
+// }
+
+// return nil, nil
 // }
 
 func (db *DictionaryStore) WriteWord(ctx context.Context, wordData *model.Word) error {

@@ -4,6 +4,12 @@ directive @goTag(key: String!, value: String!) on FIELD_DEFINITION
 type Query {
   word(word: String!): Word
   translation(word: String!, targetLang: String!): Translation
+  wordWithTranslation(word: String!, targetLang: String!): WordWithTranslation
+}
+
+type WordWithTranslation {
+  word: Word
+  translation: Translation
 }
 
 type Word {

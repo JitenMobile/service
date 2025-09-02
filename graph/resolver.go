@@ -52,6 +52,7 @@ func (r *Resolver) ResolveWordQuery(ctx context.Context, word string) (*model.Wo
 	return nil, err
 }
 
+// This query can be deprecated
 func (r *Resolver) ResolveTranslationQuery(ctx context.Context, word string, targetLang string) (*model.Translation, error) {
 
 	translationData, err := r.DictionaryStore.GetTranslation(ctx, word, targetLang)
@@ -61,14 +62,14 @@ func (r *Resolver) ResolveTranslationQuery(ctx context.Context, word string, tar
 
 	wordData, err := r.DictionaryStore.GetWord(ctx, word)
 	if err != nil {
-		log.Printf("Error reading word data from databse '%v'", err)
+		log.Printf("Error reading word data from databse %v", err)
 		return nil, err
 	}
 
 	definitions := wordData.Definitions
 	newTranslationData, err := r.LLMService.StructuredTranslation(ctx, targetLang, definitions)
 	if err != nil {
-		log.Printf("Error generating definition for word '%s' from LLMService: '%v", word, err)
+		log.Printf("Error generating definition for word %s from LLMService: %v", word, err)
 		return nil, err
 	}
 
@@ -78,4 +79,38 @@ func (r *Resolver) ResolveTranslationQuery(ctx context.Context, word string, tar
 		log.Printf("Error writing translations to database: %v", err)
 	}
 	return newTranslationData, nil
+}
+
+// May need to update this logic in the future
+func (r *Resolver) ResolveWordWithTranslationQuery(ctx context.Context, word string, targetLang string) (*model.WordWithTranslation, error) {
+	var wordWithTranslationData model.WordWithTranslation
+
+	wordData, err := r.ResolveWordQuery(ctx, word)
+	if err != nil {
+		log.Printf("Error getting word contents: %s, %v", word, err)
+		return nil, err
+	}
+
+	wordWithTranslationData.Word = wordData
+
+	translationData, err := r.DictionaryStore.GetTranslation(ctx, word, targetLang)
+	if err == nil {
+		wordWithTranslationData.Translation = translationData
+		return &wordWithTranslationData, nil
+	}
+
+	definitions := wordData.Definitions
+	newTranslationData, err := r.LLMService.StructuredTranslation(ctx, targetLang, definitions)
+	if err != nil {
+		log.Printf("Error generating definition for word %s from LLMService: %v", word, err)
+		return nil, err
+	}
+	wordWithTranslationData.Translation = newTranslationData
+
+	err = r.DictionaryStore.WriteTranslation(ctx, word, targetLang, newTranslationData)
+	if err != nil {
+		// don't return error to the query, as the data is ready for user
+		log.Printf("Error writing translations to database: %v", err)
+	}
+	return &wordWithTranslationData, nil
 }

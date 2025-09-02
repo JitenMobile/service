@@ -31,6 +31,16 @@ func (r *queryResolver) Translation(ctx context.Context, word string, targetLang
 	return data, nil
 }
 
+// WordWithTranslation is the resolver for the wordWithTranslation field.
+func (r *queryResolver) WordWithTranslation(ctx context.Context, word string, targetLang string) (*model.WordWithTranslation, error) {
+	data, err := r.ResolveWordWithTranslationQuery(ctx, word, targetLang)
+	if err != nil {
+		log.Printf("Error: Failed to resolve translation query - [word]:  %v", err)
+		return nil, err
+	}
+	return data, nil
+}
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
